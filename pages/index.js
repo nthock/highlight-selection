@@ -10,7 +10,7 @@ import {
 import { contentReducer } from "../reducers/contentReducer";
 
 const contentList = [
-  { id: 1, text: "hello world" },
+  { id: 1, text: "hello world hello" },
   { id: 2, text: "another hello" },
   { id: 3, text: "another hello" },
   { id: 4, text: "another hello" },
@@ -28,8 +28,6 @@ const Home = () => {
     currentSelection: 1,
     searchInput: "",
   });
-
-  console.log("state", state);
 
   const onChange = (e) => {
     dispatch({ type: "UPDATE_SEARCH_TERM", payload: { text: e.target.value } });

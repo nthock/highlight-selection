@@ -8,6 +8,37 @@ const updateTextContent = (textContent, { id, updatedText }) => {
   });
 };
 
+const generateUpdatedText = (
+  content,
+  searchCount,
+  occurences,
+  currentSelection,
+  regExp
+) => {
+  if (currentSelection <= searchCount) {
+    return content.text.replace(
+      regExp,
+      (match) => `<mark class="selected">${match}</mark>`
+    );
+  }
+
+  if (currentSelection > searchCount + occurences.length) {
+    return content.text.replace(
+      regExp,
+      (match) => `<mark class="selected">${match}</mark>`
+    );
+  }
+
+  const selectedIndex = currentSelection - searchCount - 1;
+
+  return content.text.replace(regExp, (match, index) => {
+    if (index === occurences[selectedIndex].index) {
+      return `<mark class="active">${match}</mark>`;
+    }
+    return `<mark class="selected">${match}</mark>`;
+  });
+};
+
 const generateRenderedContentCount = ({
   searchInput,
   textContent,
@@ -17,18 +48,18 @@ const generateRenderedContentCount = ({
 
   return textContent.reduce(
     (acc, content) => {
-      const occurences = (content.text.match(regExp) || []).length;
-      const updatedText = content.text.replace(regExp, (match, index) => {
-        if (currentSelection === acc.searchCount + 1) {
-          return `<mark class="active">${match}</mark>`;
-        }
-
-        return `<mark class="selected">${match}</mark>`;
-      });
+      const occurences = [...content.text.matchAll(regExp)];
+      const updatedText = generateUpdatedText(
+        content,
+        acc.searchCount,
+        occurences,
+        currentSelection,
+        regExp
+      );
 
       return {
         ...acc,
-        searchCount: (acc.searchCount += occurences),
+        searchCount: (acc.searchCount += occurences.length),
         renderedContent: [
           ...acc.renderedContent,
           { ...content, text: updatedText },
