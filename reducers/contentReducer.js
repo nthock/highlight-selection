@@ -13,7 +13,10 @@ const generateRenderedContentCount = ({ searchInput, textContent }) => {
   const currentSelection = 2
 
   return textContent.reduce((acc, content) => {
-    const updatedText = content.text.replace(regExp, match => `<mark class="selected">${match}</mark>`)
+    const updatedText = content.text.replace(regExp, (match, index) => {
+      console.log("content.text index", content.text, index)
+      return `<mark class="selected">${match}</mark>`
+    })
     console.log("searchCount", acc.searchCount)
 
     return {
@@ -35,7 +38,7 @@ const generateSearchData = (state) => {
     }
   }
 
-  return { ...state, searchCount: 0 }
+  return { ...state, searchCount: 0, renderedContent: state.textContent }
 }
 
 export const contentReducer = (state, action) => {

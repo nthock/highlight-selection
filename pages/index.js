@@ -6,7 +6,13 @@ import { contentReducer } from "../reducers/contentReducer"
 
 const contentList = [
   { id: 1, text: "hello world hello" },
-  { id: 2, text: "another hello" }
+  { id: 2, text: "another hello" },
+  { id: 3, text: "another hello" },
+  { id: 4, text: "another hello" },
+  { id: 5, text: "another hello" },
+  { id: 6, text: "another hello" },
+  { id: 7, text: "another hello" },
+  { id: 8, text: "another hello" }
 ]
 
 const Home = () => {
