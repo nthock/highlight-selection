@@ -1,65 +1,89 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import { useEffect, useState } from "react"
+import { Input } from "antd"
+import { CloseOutlined, SearchOutlined, UpOutlined, DownOutlined } from '@ant-design/icons';
 
-export default function Home() {
+const contentList = [
+  { id: 1, text: "hello world" },
+  { id: 2, text: "another hello" }
+]
+
+const highlightText = (searchTerm, contentList) => {
+  if (searchTerm.length > 2) {
+    const updatedContentList = contentList.map(content => {
+      const updatedText = content.text.replace(new RegExp(searchTerm, "gi"), match => (
+        `<mark>${match}</mark>`
+      ))
+      return {
+        ...content,
+        text: updatedText
+      }
+    })
+    return updatedContentList
+  }
+  return contentList
+}
+
+const Home = () => {
+  const [searchInput, setSearchInput] = useState("")
+  const [textContent, setTextContent] = useState(contentList)
+
+  const onChange = (e) => {
+    setSearchInput(e.target.value)
+  }
+
+  const onUpdateText = (id, updatedText) => {
+    const updatedTextContent = textContent.map(content => {
+      if (content.id === id) {
+        const cleanText = updatedText.replace(/(<([^>]+)>)/ig, '')
+        return { ...content, text: cleanText }
+      }
+      return content
+    })
+    setTextContent(updatedTextContent)
+  }
+
+  const renderedContent = highlightText(searchInput, textContent)
+
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <div>
+      <div className="container mx-auto p-6">
+        <div className="flex justify-center">
+          <div className="w-full md:w-1/2">
+            <Input placeholder="search"
+              value={searchInput}
+              onChange={onChange}
+              prefix={<SearchOutlined />}
+              suffix={
+                <>
+                  <p>1/252</p>
+                  <UpOutlined className="mx-1" />
+                  <DownOutlined className="mx-1" />
+                  <CloseOutlined className="ml-2" onClick={() => setSearchInput("")} />
+                </>
+              }
+            />
+            <div className="mt-2">
+              {
+                renderedContent.map((content) => {
+                  return (
+                    <div className="my-4" key={`content-${content.id}`}>
+                      <span
+                        className="w-full outline-none"
+                        contentEditable dangerouslySetInnerHTML={{ __html: content.text }}
+                        onBlur={(e) => onUpdateText(content.id, e.target.innerHTML)}
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+                      />
+                    </div>
+                  )
+                })
+              }
+            </div>
+          </div>
         </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+      </div>
     </div>
   )
 }
+
+export default Home;

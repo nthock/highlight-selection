@@ -14,3 +14,8 @@ a {
 * {
   box-sizing: border-box;
 }
+
+mark {
+  background-color: rgba(56, 151, 240, 0.16) !important;
+  padding: 0 !important;
+}
