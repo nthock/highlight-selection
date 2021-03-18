@@ -23,6 +23,19 @@ const highlightText = (searchTerm, contentList) => {
   return contentList
 }
 
+const getSearchCount = (searchTerm, contentList) => {
+  if (searchTerm.length < 2) {
+    return 0
+  }
+  const regExp = new RegExp(searchTerm, "gi");
+
+  const count = contentList.reduce((acc, content) => {
+    return acc += (content.text.match(regExp) || []).length
+  }, 0)
+  console.log("count", count)
+  return count
+}
+
 const Home = () => {
   const [searchInput, setSearchInput] = useState("")
   const [textContent, setTextContent] = useState(contentList)
@@ -43,7 +56,7 @@ const Home = () => {
   }
 
   const renderedContent = highlightText(searchInput, textContent)
-
+  const searchCount = getSearchCount(searchInput, textContent)
 
   return (
     <div>
@@ -56,7 +69,7 @@ const Home = () => {
               prefix={<SearchOutlined />}
               suffix={
                 <>
-                  <p>1/252</p>
+                  <p>1/{searchCount}</p>
                   <UpOutlined className="mx-1" />
                   <DownOutlined className="mx-1" />
                   <CloseOutlined className="ml-2" onClick={() => setSearchInput("")} />
