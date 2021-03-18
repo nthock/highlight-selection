@@ -15,7 +15,12 @@ a {
   box-sizing: border-box;
 }
 
-mark {
-  background-color: rgba(56, 151, 240, 0.16) !important;
-  padding: 0 !important;
+mark.selected {
+  background-color: rgba(56, 151, 240, 0.16);
+  padding: 0;
+}
+
+mark.active {
+  background-color: red;
+  padding: 0;
 }

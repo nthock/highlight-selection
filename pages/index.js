@@ -1,62 +1,32 @@
-import { useEffect, useState } from "react"
+import { useReducer } from "react"
 import { Input } from "antd"
 import { CloseOutlined, SearchOutlined, UpOutlined, DownOutlined } from '@ant-design/icons';
 
+import { contentReducer } from "../reducers/contentReducer"
+
 const contentList = [
-  { id: 1, text: "hello world" },
+  { id: 1, text: "hello world hello" },
   { id: 2, text: "another hello" }
 ]
 
-const highlightText = (searchTerm, contentList) => {
-  if (searchTerm.length > 2) {
-    const updatedContentList = contentList.map(content => {
-      const updatedText = content.text.replace(new RegExp(searchTerm, "gi"), match => (
-        `<mark>${match}</mark>`
-      ))
-      return {
-        ...content,
-        text: updatedText
-      }
-    })
-    return updatedContentList
-  }
-  return contentList
-}
-
-const getSearchCount = (searchTerm, contentList) => {
-  if (searchTerm.length < 2) {
-    return 0
-  }
-  const regExp = new RegExp(searchTerm, "gi");
-
-  const count = contentList.reduce((acc, content) => {
-    return acc += (content.text.match(regExp) || []).length
-  }, 0)
-  console.log("count", count)
-  return count
-}
-
 const Home = () => {
-  const [searchInput, setSearchInput] = useState("")
-  const [textContent, setTextContent] = useState(contentList)
+  const [state, dispatch] = useReducer(contentReducer, {
+    textContent: contentList,
+    searchCount: 0,
+    renderedContent: contentList,
+    currentSelection: 0,
+    searchInput: ""
+  });
+
+  console.log("state", state)
 
   const onChange = (e) => {
-    setSearchInput(e.target.value)
+    dispatch({ type: "UPDATE_SEARCH_TERM", payload: { text: e.target.value } })
   }
 
   const onUpdateText = (id, updatedText) => {
-    const updatedTextContent = textContent.map(content => {
-      if (content.id === id) {
-        const cleanText = updatedText.replace(/(<([^>]+)>)/ig, '')
-        return { ...content, text: cleanText }
-      }
-      return content
-    })
-    setTextContent(updatedTextContent)
+    dispatch({ type: 'UPDATE_CONTENT', payload: { id, updatedText } })
   }
-
-  const renderedContent = highlightText(searchInput, textContent)
-  const searchCount = getSearchCount(searchInput, textContent)
 
   return (
     <div>
@@ -64,21 +34,21 @@ const Home = () => {
         <div className="flex justify-center">
           <div className="w-full md:w-1/2">
             <Input placeholder="search"
-              value={searchInput}
+              value={state.searchInput}
               onChange={onChange}
               prefix={<SearchOutlined />}
               suffix={
                 <>
-                  <p>1/{searchCount}</p>
+                  <p>1/{state.searchCount}</p>
                   <UpOutlined className="mx-1" />
                   <DownOutlined className="mx-1" />
-                  <CloseOutlined className="ml-2" onClick={() => setSearchInput("")} />
+                  <CloseOutlined className="ml-2" onClick={() => dispatch({ type: "UPDATE_SEARCH_TERM", payload: { text: "" } })} />
                 </>
               }
             />
             <div className="mt-2">
               {
-                renderedContent.map((content) => {
+                state.renderedContent.map((content) => {
                   return (
                     <div className="my-4" key={`content-${content.id}`}>
                       <span
