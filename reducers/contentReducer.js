@@ -33,7 +33,7 @@ const generateUpdatedText = (
 
   return content.text.replace(regExp, (match, index) => {
     if (index === occurences[selectedIndex].index) {
-      return `<mark class="active">${match}</mark>`;
+      return `<mark id="active-selection" class="active">${match}</mark>`;
     }
     return `<mark class="selected">${match}</mark>`;
   });
