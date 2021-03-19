@@ -63,7 +63,7 @@ const Home = () => {
         inline: 'center'
       });
     }
-  })
+  }, [state.currentSelection])
 
 
 
@@ -79,17 +79,22 @@ const Home = () => {
               prefix={<SearchOutlined />}
               suffix={
                 <>
-                  <p>
-                    {state.currentSelection}/{state.searchCount}
-                  </p>
-                  <UpOutlined
-                    className="mx-1"
-                    onClick={() => dispatch({ type: "PREVIOUS_SELECTION" })}
-                  />
-                  <DownOutlined
-                    className="mx-1"
-                    onClick={() => dispatch({ type: "NEXT_SELECTION" })}
-                  />
+                  {state.searchCount > 0 && (
+                    <>
+                      <p>
+                        {state.currentSelection}/{state.searchCount}
+                      </p>
+                      <UpOutlined
+                        className="mx-1"
+                        onClick={() => dispatch({ type: "PREVIOUS_SELECTION" })}
+                      />
+                      <DownOutlined
+                        className="mx-1"
+                        onClick={() => dispatch({ type: "NEXT_SELECTION" })}
+                      />
+                    </>
+                  )}
+
                   <CloseOutlined
                     className="ml-2"
                     onClick={() =>

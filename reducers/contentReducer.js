@@ -70,18 +70,39 @@ const generateRenderedContentCount = ({
   );
 };
 
+const updateSelection = (currentSelection, searchCount) => {
+  if (searchCount === 0) {
+    return 0
+  }
+
+  if (searchCount > 0) {
+    if (currentSelection === 0) {
+      return 1
+    }
+    if (currentSelection <= searchCount) {
+      return currentSelection
+    }
+    return searchCount
+  }
+
+  return currentSelection
+}
+
 const generateSearchData = (state) => {
-  const { searchInput } = state;
+  const { searchInput, currentSelection, textContent } = state;
 
   if (searchInput.length > 2) {
-    const searchData = generateRenderedContentCount(state);
+    const searchCount = textContent.map(c => c.text).join(" ").match(new RegExp(searchInput, "gi"))?.length || 0
+    const updatedCurrentSelection = updateSelection(currentSelection, searchCount)
+    const searchData = generateRenderedContentCount({ ...state, currentSelection: updatedCurrentSelection });
     return {
       ...state,
       ...searchData,
+      currentSelection: updatedCurrentSelection
     };
   }
 
-  return { ...state, searchCount: 0, renderedContent: state.textContent };
+  return { ...state, searchCount: 0, renderedContent: state.textContent, currentSelection: 0 };
 };
 
 const setPreviousSelection = ({ currentSelection }) => {
