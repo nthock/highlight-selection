@@ -24,3 +24,8 @@ mark.active {
   background-color: red;
   padding: 0;
 }
+
+[data-placeholder]:empty:before{
+  content: attr(data-placeholder);
+  color: #888;
+}
