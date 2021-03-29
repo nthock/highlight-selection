@@ -29,3 +29,7 @@ mark.active {
   content: attr(data-placeholder);
   color: #888;
 }
+
+.ProseMirror {
+  outline: none;
+}
